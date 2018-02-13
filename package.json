@@ -1,0 +1,29 @@
+{
+  "name": "windmap",
+  "version": "1.0.0",
+  "description": "A node script to request and process wind data from the USA National Weather Service",
+  "main": "data2PNG.js",
+  "dependencies": {
+    "command-exists": "^1.2.2",
+    "pngjs": "^3.3.1",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibesora/WindMap.git"
+  },
+  "keywords": [
+    "wind",
+    "map"
+  ],
+  "author": "@ibesora",
+  "license": "Beerware",
+  "bugs": {
+    "url": "https://github.com/ibesora/WindMap/issues"
+  },
+  "homepage": "https://github.com/ibesora/WindMap#readme"
+}

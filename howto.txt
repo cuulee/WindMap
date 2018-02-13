@@ -1,0 +1,12 @@
+URL genèrica
+http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl?file=gfs.t00z.pgrb2.0p25.f000&lev_10_m_above_ground=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&dir=/gfs.2018021200
+Baixar wgrib2 de: http://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2
+Executar wgrib2 ../gfs.t00z.pgrb2.0p25.f000 -v i veurem les variables (UGRD i VGRD) etiquetades com a U-component of wind i V-Compoenent of wind (http://colaweb.gmu.edu/dev/clim301/lectures/wind/wind-uv)
+
+Descarregar grib de https://software.ecmwf.int/wiki/display/GRIB/Releases i compilar si fa falta
+La docu és a https://software.ecmwf.int/wiki/display/GRIB/grib_set
+
+grib_set -r -s packingType=grid_simple input output
+grib_dump -j file > out.json per passar-ho a json. Això ens donara un fitxer amb el json de la component u i el json de la component v seguits. Al carregar el fitxer l'haurem de dividir
+
+node data2PNG.js 00 20180213 "[-90,90,0,360]"
