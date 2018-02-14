@@ -3,14 +3,54 @@
   "version": "1.0.0",
   "description": "A node script to request and process wind data from the USA National Weather Service",
   "main": "data2PNG.js",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "brfs": "^1.4.4",
+    "browserify": "^16.1.0",
+    "bubleify": "^1.1.0",
     "command-exists": "^1.2.2",
+    "derequire": "^2.0.6",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-flowtype": "^2.44.0",
+    "eslint-plugin-import": "^2.8.0",
+    "minifyify": "^7.3.5",
+    "npm-run-all": "^4.1.2",
+    "npm-watch": "^0.3.0",
     "pngjs": "^3.3.1",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "st": "^1.2.2",
+    "unflowify": "^1.0.1"
   },
-  "devDependencies": {},
+  "browserify": {
+    "transform": [
+      "unflowify",
+      [
+        "bubleify",
+        {
+          "bubleError": true,
+          "transforms": {
+            "dangerousForOf": true
+          },
+          "objectAssign": "Object.assign"
+        }
+      ],
+      "brfs"
+    ]
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-dev": "browserify src/index.js --debug --standalone wind-map > dist/wind-map.js",
+    "build-min": "browserify src/index.js --debug --plugin [minifyify --map wind-map.js.map --output dist/wind-map.js.map] --standalone project-template | derequire > dist/wind-map.js",
+    "watch": "npm-watch",
+    "lint": "eslint src/*.js node/*.js",
+    "start-server": "st -h 127.0.0.1 -i index.html -nc",
+    "start": "run-s lint build-min start-server",
+    "start-dev": "run-s lint build-dev start-server"
+  },
+  "watch": {
+    "start-dev": "{src,node}/*.js"
   },
   "repository": {
     "type": "git",
