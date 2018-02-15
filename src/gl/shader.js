@@ -1,7 +1,8 @@
 // @flow
-'use strict';
+"use strict";
 
 class Shader {
+
     context: GLContext;
     source: String;
     content: GLShader;
@@ -30,11 +31,11 @@ class Shader {
 
         const gl = this.context;
         this.content = gl.createShader(this.getShaderType());
-	    gl.shaderSource(this.content, this.source);
-	    gl.compileShader(this.content);
+        gl.shaderSource(this.content, this.source);
+        gl.compileShader(this.content);
 
-	    const ok = gl.getShaderParameter(this.content, gl.COMPILE_STATUS);
-        if(!ok) {
+        const ok = gl.getShaderParameter(this.content, gl.COMPILE_STATUS);
+        if (!ok) {
 
             const errorText = gl.getShaderInfoLog(this.content);
             gl.deleteShader(this.content);
@@ -48,10 +49,11 @@ class Shader {
 
     getShaderType() {
 
-        throw new Exception("Subclass should implement the getShaderType method")
+        throw new Exception("Subclass should implement the " +
+            "getShaderType method");
 
     }
 
 }
 
-exports default Shader;
+export default Shader;

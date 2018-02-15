@@ -1,14 +1,14 @@
 // @flow
-'use strict';
+"use strict";
 
-import Buffer from "./buffer"
+import Buffer from "./buffer";
 
 class StaticDrawArrayBuffer extends Buffer {
 
     constructor(gl: GLContext, data: Float32Array) {
 
         super(gl, gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        
+
     }
 
     bindAttribPointer(attribute: number, components: number) {
@@ -23,4 +23,4 @@ class StaticDrawArrayBuffer extends Buffer {
 
 }
 
-exports default StaticDrawArrayBuffer;
+export default StaticDrawArrayBuffer;

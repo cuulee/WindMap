@@ -44,10 +44,11 @@
     "build-dev": "browserify src/index.js --debug --standalone wind-map > dist/wind-map.js",
     "build-min": "browserify src/index.js --debug --plugin [minifyify --map wind-map.js.map --output dist/wind-map.js.map] --standalone project-template | derequire > dist/wind-map.js",
     "watch": "npm-watch",
-    "lint": "eslint src/*.js node/*.js",
+    "lint": "eslint src/*/*.js src/*.js node/*.js",
     "start-server": "st -h 127.0.0.1 -i index.html -nc",
-    "start": "run-s lint build-min start-server",
-    "start-dev": "run-s lint build-dev start-server"
+    "start": "run-s lint test-flow build-min start-server",
+    "start-dev": "run-s lint test-flow build-dev start-server",
+    "test-flow": "flow ."
   },
   "watch": {
     "start-dev": "{src,node}/*.js"

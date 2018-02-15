@@ -1,14 +1,14 @@
 // @flow
-'use strict';
+"use strict";
 
-import Shader from "./shader"
+import Shader from "./shader";
 
 class VertexShader extends Shader {
 
     constructor(gl: GLContext, shaderSource: string) {
 
         super(gl, shaderSource);
-        
+
     }
 
     getShaderType() {
@@ -19,4 +19,4 @@ class VertexShader extends Shader {
 
 }
 
-exports default Shader;
+export default VertexShader;

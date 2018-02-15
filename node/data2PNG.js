@@ -45,14 +45,14 @@ function doRequest(time, date, bbox) {
     const url = buildURL(time, date, bboxArray);
 
     console.log(url);
-    request.get({ 
-        
-        url: url, encoding: null 
-    
+    request.get({
+
+        url: url, encoding: null,
+
     }, (error, response, body) => {
 
         processResponse(body);
-        
+
     });
 
 }
@@ -62,7 +62,9 @@ function doRequest(time, date, bbox) {
  *
  * @param {string} time One of 00, 06, 12, 18
  * @param {string} date The date in YYYYMMDD format
- * @param {Array<number>} bboxArray A bbox in the format [minLat,maxLat,minLon,maxLon]
+ * @param {Array<number>} bboxArray A bbox in the format
+ * [minLat,maxLat,minLon,maxLon]
+ * @return {string} The URL
  * @example
  * buildURL("00", "20180214", [-90,90,0,360])
  */
@@ -93,8 +95,8 @@ function processResponse(data) {
 }
 
 /**
- * Sets the grib encoding to a grid_simple packing type 
- * (https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+keys) 
+ * Sets the grib encoding to a grid_simple packing type
+ * (https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+keys)
  * and exports it as a JSON file
  *
  * @example
@@ -115,7 +117,7 @@ function convertGrib2Json() {
  */
 function createTexture() {
 
-    const mergedData = fs.readFileSync("tmp.json", { encoding:"UTF-8" });
+    const mergedData = fs.readFileSync("tmp.json", { encoding: "UTF-8" });
     const separatorPosition = mergedData.indexOf("}");
     const uDataString = mergedData.substring(0, separatorPosition+1);
     const vDataString = mergedData.substring(separatorPosition+1);
@@ -129,11 +131,11 @@ function createTexture() {
         width: width,
         height: height,
         filterType: 4,
-        colorType: 2    //Color, no alpha
+        colorType: 2, // Color, no alpha
     });
 
     fillTexture(image, width, height, uData, vData);
-    saveImage(image, `${uData.dataDate}_${uData.dataTime}.png`)
+    saveImage(image, `${uData.dataDate}_${uData.dataTime}.png`);
     saveMetadata(uData, vData, `${uData.dataDate}_${uData.dataTime}.json`);
 
 }
@@ -152,14 +154,18 @@ function createTexture() {
 function fillTexture(image, width, height, uData, vData) {
 
     const halfWidth = width / 2;
-    for(let i = 0; i < height; i++) {
-        
-        for(let j = 0; j < width; j++) {
+    for (let i = 0; i < height; i++) {
+
+        for (let j = 0; j < width; j++) {
 
             const pngIndex = (i * width + j) * 4;
-            const gribIndex = i * width + (j + halfWidth) % width; // Offset the map to the 180th meridian so it shows a full map centered at europe
-            image.data[pngIndex + 0] = normalizeValue(uData.values[gribIndex], uData.minimum, uData.maximum);
-            image.data[pngIndex + 1] = normalizeValue(vData.values[gribIndex], vData.minimum, vData.maximum);
+            const gribIndex = i * width + (j + halfWidth) % width;
+            // Offset the map to the 180th meridian so it shows a
+            // full map centered at europe
+            image.data[pngIndex + 0] = normalizeValue(
+                uData.values[gribIndex], uData.minimum, uData.maximum);
+            image.data[pngIndex + 1] = normalizeValue(
+                vData.values[gribIndex], vData.minimum, vData.maximum);
             image.data[pngIndex + 2] = 255;
             image.data[pngIndex + 3] = 255;
 
@@ -174,7 +180,7 @@ function fillTexture(image, width, height, uData, vData) {
  * @param {number} value The value to normalize
  * @param {number} min The minimum range value
  * @param {number} max The maximum range value
- *
+ * @return {number} The normalized value
  * @example
  * normalizeValue(value, min, max)
  */
@@ -213,7 +219,7 @@ function saveMetadata(uData, vData, name) {
         uMin: uData.minimum,
         uMax: uData.maximum,
         vMin: vData.minimum,
-        vMax: vData.maximum
+        vMax: vData.maximum,
     }, null, 2) + "\n");
 
 }

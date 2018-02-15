@@ -1,5 +1,5 @@
 // @flow
-'use strict';
+"use strict";
 
 import glUtils from "./glUtils";
 import StaticDrawArrayBuffer from "./staticDrawArrayBuffer";
@@ -12,53 +12,94 @@ import Texture2D from "./texture2d";
  * @param {number} lat Latitude, measured in degrees.
  * @param {number} lon Longitude, measured in degrees.
  * @example
- * 
+ *
  */
 class WindLayer {
-    context: GLContext;
 
+    context: GLContext;
+    renderParticlesProgram: Program;
+    accumulationProgram: Program;
+    updateParticlesProgram: Program;
+    quadBuffer: StaticDrawArrayBuffer;
+    frameBuffer: FrameBuffer;
+
+    /**
+     * Constructor
+     *
+     * @param {GLContext} gl A WebGLRenderingContext object
+     * @example
+     *
+     */
     constructor(gl: GLContext) {
 
         this.context = gl;
-        this.renderParticlesProgram = glUtils.createProgramFromSources(gl, renderParticlesVert, renderParticlesFrag);
-        this.accumulationProgram = glUtils.createProgramFromSources(gl, quadVert, accumulationFrag);
-        this.updateParticlesProgram = glUtils.createProgramFromSources(gl, quadVert, updateParticlesFrag);
+        this.renderParticlesProgram = glUtils.createProgramFromSources(gl,
+            renderParticlesVert, renderParticlesFrag);
+        this.accumulationProgram = glUtils.createProgramFromSources(gl,
+            quadVert, accumulationFrag);
+        this.updateParticlesProgram = glUtils.createProgramFromSources(gl,
+            quadVert, updateParticlesFrag);
 
-        this.quadBuffer = new StaticDrawArrayBuffer(glUtils.createClipSpaceQuadVertices());
+        this.quadBuffer = new StaticDrawArrayBuffer(
+            glUtils.createClipSpaceQuadVertices());
         this.frameBuffer = new FrameBuffer(gl);
 
         this.resize();
 
     }
 
+    /**
+     * Resize callback
+     */
     resize() {
 
         this.rebuildScreenTextures();
 
     }
 
+    /**
+     * Rebuilds the screen textures
+     */
     rebuildScreenTextures() {
 
         const gl = this.context;
-        const emptyBuffer = glUtils.createPixelBuffer(gl.canvas.width, gl.canvas.height, 4);
+        const emptyBuffer = glUtils.createPixelBuffer(
+            gl.canvas.width, gl.canvas.height, 4);
 
-        this.offscreenTexture = new Texture2D(gl, emptyBuffer, gl.canvas.width, gl.canvas.height);
-        this.screenTexture = new Texture2D(gl, emptyBuffer, gl.canvas.width, gl.canvas.height);
+        this.offscreenTexture = new Texture2D(gl, emptyBuffer,
+            gl.canvas.width, gl.canvas.height);
+        this.screenTexture = new Texture2D(gl, emptyBuffer,
+            gl.canvas.width, gl.canvas.height);
 
     }
 
+    /**
+     * Sets the wind data texture
+     *
+     * @param {Image} data A texture with the wind data encoded
+     */
     set windData(data: Image) {
 
-        this.windTexture = new Texture2D(this.context, data, this.context.LINEAR);
+        this.windTexture = new Texture2D(this.context, data,
+            this.context.LINEAR);
 
     }
 
+    /**
+     * Sets the noise texture
+     *
+     * @param {Image} data A noise texture used to generate random positions
+     */
     set noiseData(data: Image) {
 
-        this.noiseTexture = new Texture2D(this.context, data, this.context.NEAREST);
+        this.noiseTexture = new Texture2D(this.context, data,
+            this.context.NEAREST);
 
     }
 
+    /**
+     * Renders the wind layer
+     */
     render() {
 
         this.setup();
@@ -68,6 +109,9 @@ class WindLayer {
 
     }
 
+    /**
+     * Setups the WebGL status
+     */
     setup() {
 
         const gl = this.context;
@@ -76,6 +120,9 @@ class WindLayer {
 
     }
 
+    /**
+     * Binds the textures used by the shaders
+     */
     bindTextures() {
 
         this.windTexture.bind(0);
@@ -84,9 +131,10 @@ class WindLayer {
 
     }
 
+    /**
+     * Draws the layer
+     */
     drawLayer() {
-
-        const gl = this.context;
 
         draw2OffscreenBuffer();
         blendOffscreenBuffer2Screen();
@@ -94,6 +142,9 @@ class WindLayer {
 
     }
 
+    /**
+     * Draws the particles to the offscreen buffer
+     */
     draw2OffscreenBuffer() {
 
         const gl = this.context;
@@ -108,6 +159,9 @@ class WindLayer {
 
     }
 
+    /**
+     * Blends the offscreen buffer to the screen
+     */
     blendOffscreenBuffer2Screen() {
 
         const gl = this.context;
@@ -119,12 +173,18 @@ class WindLayer {
 
     }
 
+    /**
+     * Renders the previous frame texture to the screen
+     */
     drawPreviousFrame() {
 
         this.drawTexture(this.offscreenTexture, this.fadeOpacity);
 
     }
 
+    /**
+     * Renders the particles
+     */
     drawParticles() {
 
         const gl = this.gl;
@@ -137,15 +197,23 @@ class WindLayer {
         gl.uniform1i(program.u_wind, 0);
         gl.uniform1i(program.u_particles, 1);
         gl.uniform1i(program.u_color_ramp, 2);
-        gl.uniform1f(program.u_particles_res, this.particleStateResolution);
-        gl.uniform2f(program.u_wind_min, this.windData.uMin, this.windData.vMin);
-        gl.uniform2f(program.u_wind_max, this.windData.uMax, this.windData.vMax);
+        gl.uniform1f(program.u_particles_res,
+            this.particleStateResolution);
+        gl.uniform2f(program.u_wind_min, this.windData.uMin,
+            this.windData.vMin);
+        gl.uniform2f(program.u_wind_max, this.windData.uMax,
+            this.windData.vMax);
 
         gl.drawArrays(gl.POINTS, 0, this._numParticles);
 
     }
 
-    drawTexture(texture, opacity) {
+    /**
+     * Renders a full screen quad with a texture with opacity
+     * @param {Texture} texture The texture to draw
+     * @param {number} opacity The opacity of the quad
+     */
+    drawTexture(texture: Texture, opacity: number) {
 
         const gl = this.context;
         const program = this.accumulationProgram;
@@ -162,6 +230,9 @@ class WindLayer {
 
     }
 
+    /**
+     * Swaps the offscreen and screen buffer
+     */
     swapTextureIds() {
 
         const tmp = this.offscreenTexture.content;
@@ -170,26 +241,40 @@ class WindLayer {
 
     }
 
+    /**
+     * Sets the number of particles used in the layer
+     * @param {number} numParticles The number of particles
+     */
     set numParticles(numParticles) {
+
         const gl = this.gl;
 
-        // we create a square texture where each pixel will hold a particle position encoded as RGBA
-        const particleRes = this.particleStateResolution = Math.ceil(Math.sqrt(numParticles));
+        // we create a square texture where each pixel will hold
+        // a particle position encoded as RGBA
+        const particleRes = this.particleStateResolution =
+            Math.ceil(Math.sqrt(numParticles));
         this._numParticles = particleRes * particleRes;
 
         const particleState = new Uint8Array(this._numParticles * 4);
         for (let i = 0; i < particleState.length; i++) {
-            particleState[i] = Math.floor(Math.random() * 256); // randomize the initial particle positions
+
+            particleState[i] = Math.floor(Math.random() * 256);
+            // randomize the initial particle positions
+
         }
-        // textures to hold the particle state for the current and the next frame
-        this.particleStateTexture0 = util.createTexture(gl, gl.NEAREST, particleState, particleRes, particleRes);
-        this.particleStateTexture1 = util.createTexture(gl, gl.NEAREST, particleState, particleRes, particleRes);
+        // textures to hold the particle state for the current an
+        // the next frame
+        this.particleStateTexture0 = util.createTexture(gl, gl.NEAREST,
+            particleState, particleRes, particleRes);
+        this.particleStateTexture1 = util.createTexture(gl, gl.NEAREST,
+            particleState, particleRes, particleRes);
 
         const particleIndices = new Float32Array(this._numParticles);
         for (let i = 0; i < this._numParticles; i++) particleIndices[i] = i;
         this.particleIndexBuffer = util.createBuffer(gl, particleIndices);
+
     }
 
 }
 
-exports default WindLayer;
+export default WindLayer;

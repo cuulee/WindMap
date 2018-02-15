@@ -6,14 +6,12 @@
     "parser": "babel-eslint",
     "parserOptions": {
         "ecmaVersion": 6,
-        "sourceType": "script"
+        "sourceType": "module"
     },
     "plugins": [
       "flowtype"
     ],
     "rules": {
-        "object-curly-spacing": ["error", "always"],
-        "quotes": ["error", "double"],
         "flowtype/define-flow-type": 1,
         "flowtype/require-valid-file-annotation": [
             2,
@@ -21,7 +19,19 @@
                 "annotationStyle": "line"
             }
         ],
-        "padded-blocks": ["error", "always"]
+        "no-tabs": off,
+        "object-curly-spacing": ["error", "always"],
+        "padded-blocks": ["error", "always"],
+        "quotes": ["error", "double"],
+        "require-jsdoc": ["error", {
+            "require": {
+                "FunctionDeclaration": false,
+                "MethodDefinition": false,
+                "ClassDeclaration": false,
+                "ArrowFunctionExpression": false,
+                "FunctionExpression": false
+            }
+        }]
     },
     "env": {
       "es6": true

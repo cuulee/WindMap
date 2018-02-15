@@ -1,7 +1,8 @@
 // @flow
-'use strict';
+"use strict";
 
 class FrameBuffer {
+
     context: GLContext;
     content: GLBuffer;
 
@@ -19,7 +20,8 @@ class FrameBuffer {
         const gl = this.context;
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.content);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture.content, 0);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+            gl.TEXTURE_2D, texture.content, 0);
 
     }
 
@@ -33,4 +35,4 @@ class FrameBuffer {
 
 }
 
-exports default FrameBuffer;
+export default FrameBuffer;

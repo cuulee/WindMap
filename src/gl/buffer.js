@@ -1,14 +1,25 @@
 // @flow
-'use strict';
+"use strict";
 
+/**
+ * A `Buffer` class
+ */
 class Buffer {
+
     context: GLContext;
-    target: number;
-    usage: number;
+    target: GLEnum;
+    usage: GLEnum;
     content: GLBuffer;
 
-
-    constructor(gl: GLContext, target: number, data: Float32Array, usage: number) {
+    /**
+     * Constructor
+     * @param {GLContext} gl The WebGLRenderingContext object
+     * @param {GLEnum} target
+     * @param {Float32Array} data
+     * @param {GLEnum} usage
+     */
+    constructor(gl: GLContext, target: GLEnum, data: Float32Array,
+        usage: GLEnum) {
 
         this.context = gl;
         this.target = target;
@@ -22,4 +33,4 @@ class Buffer {
 
 }
 
-exports default Buffer;
+export default Buffer;

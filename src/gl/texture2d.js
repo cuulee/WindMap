@@ -1,7 +1,8 @@
 // @flow
-'use strict';
+"use strict";
 
 class Texture2D {
+
     context: GLContext;
     width: number;
     height: number;
@@ -12,8 +13,9 @@ class Texture2D {
     content: GLTexture;
 
 
-    constructor(gl: GLContext, data: Uint8Array, width: number, height: number, minFilter?: number, 
-        maxFilter?: number, wrapSMode?: number, wrapTMode?: number) {
+    constructor(gl: GLContext, data: Uint8Array, width: number,
+        height: number, minFilter?: number, maxFilter?: number,
+        wrapSMode?: number, wrapTMode?: number) {
 
         this.context = gl;
         this.width = width;
@@ -33,9 +35,12 @@ class Texture2D {
         gl.bindTexture(gl.TEXTURE_2D, this.content);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapSMode);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapTMode);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.maxFilter);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
+            this.minFilter);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER,
+            this.maxFilter);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width,
+            this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.bindTexture(gl.TEXTURE_2D, null);
 
     }
@@ -50,4 +55,4 @@ class Texture2D {
 
 }
 
-exports default Texture2D;
+export default Texture2D;
